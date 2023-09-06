@@ -29,8 +29,17 @@ public class ProjectSettingsRegister : SettingsProvider
 		};
 	}
 
+	private ObjectField GetBuildConfig()
+	{
+		var objField = new ObjectField("Config") { objectType = typeof(BuildConfig) };
+		objField.value = BuildConfig.GetOrCreateSettings();
+		return objField;
+	}
+
 	public override void OnActivate(string searchContext, VisualElement rootElement)
 	{
+		base.OnActivate(searchContext, rootElement);
+
 		var title = new Label { text = LABEL, style = { fontSize = 20 } };
 		title.AddToClassList("title");
 		rootElement.Add(title);

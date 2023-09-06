@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
+using Builds;
 using Deployment;
 using Deployment.Deployments;
 using Deployment.Server.Unity;
 using Server.Configs;
 using Server.RemoteDeploy;
 using SharedLib;
+using SharedLib.Processes;
 using SharedLib.Server;
 
 namespace Server;
@@ -42,6 +44,19 @@ public static class App
 				return;
 			}
 			await RunBuildPipe(pipeline);
+
+			var asset = new BuildSettingsAsset("made up");
+			
+			var preBuild = new PrebuildProcess();
+			var steamDeploy = new SteamDeployProcess(
+				new UnityBuildProcess(workspace, asset),
+				new UnityBuildProcess(workspace, asset),
+				new UnityBuildProcess(workspace, asset));
+			var appleDeploy = new AppleDeployProcess(new UnityBuildProcess(workspace, asset));
+			var clandforgeDeploy = new ClanforgeProcess(new UnityBuildProcess(workspace, asset));
+			var postBuild = new PostBuildProcess();
+			var pipeline2 = new Pineline(preBuild, steamDeploy, appleDeploy, clandforgeDeploy, postBuild);
+			await pipeline2.ProcessesAsync();
 		}
 		else
 		{
