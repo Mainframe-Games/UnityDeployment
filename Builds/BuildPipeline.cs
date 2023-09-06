@@ -10,7 +10,7 @@ using SharedLib.Webhooks;
 
 namespace Deployment;
 
-public class BuildPipeline
+public class BuildPipeline : IPipelineProcess
 {
 	/// <summary>
 	/// Key to use to tag version bump commit and find previous build commit
@@ -79,8 +79,17 @@ public class BuildPipeline
 	}
 
 	#region Build Steps
+	
+	public string Name => $"{nameof(BuildPipeline)}_{Id}";
+	public async Task<ProcessResult> ProcessesAsync()
+	{
+		var res = new ProcessResult();
+		var isSuccessful = await RunAsync();
+		res.Status = isSuccessful ? ProcessStatus.Failed : ProcessStatus.Success;
+		return res;
+	}
 
-	public async Task<bool> RunAsync()
+	private async Task<bool> RunAsync()
 	{
 		try
 		{

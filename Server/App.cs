@@ -107,9 +107,9 @@ public static class App
 		pipeline.GetExtraHookLogs += BuildPipelineOnGetExtraHookLog;
 		pipeline.DeployEvent += BuildPipelineOnDeployEvent;
 		
-		var isSuccessful = await pipeline.RunAsync();
+		var res = await pipeline.ProcessesAsync();
 		
-		if (isSuccessful)
+		if (res.Status is ProcessStatus.Success)
 			DumpLogs();
 		
 		Pipelines.Remove(pipeline.Id);
